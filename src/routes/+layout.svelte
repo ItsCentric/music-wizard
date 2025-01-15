@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
+	import { spotifySignIn, supabase } from '$lib/supabaseClient';
 	import '../app.css';
 	let { children } = $props();
 </script>
@@ -11,7 +12,13 @@
 			<p class="text-2xl">Music Wizard</p>
 		</a>
 		<div>
-			<Button disabled>Login</Button>
+			{#await supabase.auth.getSession() then session}
+				{#if session}
+					<Button>Dashboard</Button>
+				{:else}
+					<Button onclick={async () => await spotifySignIn()}>Login</Button>
+				{/if}
+			{/await}
 		</div>
 	</nav>
 	<main class="flex-1">
